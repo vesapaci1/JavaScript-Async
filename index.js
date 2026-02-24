@@ -1,28 +1,46 @@
 console.log("Start");
 
-function fetchUser(callback) {
+function fetchUserPromise() {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-        const user = {id: 1, name: "Vesa"};
-        callback(user);
+      const success = true;
+
+      if (success) {
+        resolve({ id: 1, name: "Vesa" });
+      } else {
+        reject("Failed to fetch user");
+      }
     }, 2000);
+  });
 }
 
-fetchUser(function (user) {
-    console.log("User received:", user);
-});
+fetchUserPromise()
+  .then(user => {
+    console.log("User:", user);
+  })
+  .catch(error => {
+    console.log("Error:", error);
+  });
 
 console.log("End");
 
 
-function fetchOrders(userId, callback) {
-  setTimeout(() => {
-    const orders = ["Order1", "Order2"];
-    callback(orders);
-  }, 1500);
+function fetchOrdersPromise(userId) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(["Order1", "Order2"]);
+        }, 1500);
+    });
 }
 
-fetchUser(function (user) {
-  fetchOrders(user.id, function (orders) {
+fetchOrdersPromise()
+.then((user) => {
+    console.log("User:", user);
+    return fetchOrdersPromise(user.id);
+})
+.then((orders) => {
     console.log("Orders:", orders);
-  });
+})
+.catch((error) => {
+    console.log("Error:", error);
 });
